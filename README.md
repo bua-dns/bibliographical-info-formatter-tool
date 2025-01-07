@@ -2,7 +2,7 @@
 
 ## Frontend (GitHub Pages)
 
-(https://bua-dns.github.io/vue-deployment/)[https://bua-dns.github.io/vue-deployment/]
+[https://bua-dns.github.io/vue-deployment/](https://bua-dns.github.io/vue-deployment/)
 
 This template should help get you started developing with Vue 3 in Vite.
 
