@@ -281,7 +281,7 @@ onMounted(async () => {
         </div>
       </div>
   </div>
-  <div class="data-output" v-if="false">
+  <div class="data-output" v-if="true">
     <pre>{{ items }}</pre>
   </div>
 </main>
