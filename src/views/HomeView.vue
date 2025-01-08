@@ -16,17 +16,33 @@ const items = computed(() => {
       let mappedItem = {};
       mappedItem['id'] = item['o:id'];
       mappedItem['label'] = item['o:title'];
+      mappedItem['headerData'] = item['pro:headerData'] && item['pro:headerData'][0]
+        ? item['pro:headerData'][0]['@value']
+        : 'No header data';
       const provenanceProps = Object.keys(item).filter(key => key.startsWith('pro:'));
       provenanceProps.forEach(prop => {
         mappedItem[prop] = item[prop];
       });
       mappedItem['related'] = getRelatedInformationUnits(item['o:id']);
       // mappedItem['provenanceStations'] = getProvenanceStations(item['o:id']);
-      mappedItem['provenanceStations'] =getProvenanceStations(item['o:id']);
+      mappedItem['provenanceStations'] = getProvenanceStations(item['o:id']);
       return mappedItem;
+  })
+  .map(item => {
+    return {
+      ...item,
+      dossierJson: createJsonDossier(item),
+    };
   })
   .sort((a, b) => a.label.localeCompare(b.label));
 });
+function createJsonDossier(item) {
+  let dossier = {
+    'label': item.label,
+  };
+  return JSON.stringify(dossier, null, 2);
+  
+}
 
 function getSortDate(station) {
   let date = '';
@@ -86,6 +102,7 @@ function getRelatedInformationUnits(id) {
       let mappedItem = {};
       mappedItem['id'] = item['o:id'];
       mappedItem['dbLInk'] = getDBLink(item['o:id']);
+      mappedItem['infoSource'] = item['pro:infoSource'][0]['@value'] || 'No info source';
       mappedItem['infoSourceDate'] = item['pro:infoSourceDate'][0]['@value'];
       mappedItem['label'] = item['o:title'];
       const provenanceProps = Object.keys(item).filter(key => key.startsWith('pro:'));
@@ -110,6 +127,7 @@ function getRelatedInformationUnits(id) {
         value: claim.value,
         infoSourceDate: item.infoSourceDate,
         dbLink: item.dbLInk,
+        source: item.infoSource,
       }) ;
     }
   }
@@ -120,17 +138,7 @@ function getRelatedInformationUnits(id) {
   return claims
   // return relatedItems;
 }
-// extract value for specific property from related resource
-function getRelatedValue(prop, resourceId) {
-  const relatedItem = itemsData.value.find(item => item['o:id'] === resourceId);
-  if (!relatedItem) {
-    return 'Related item not found';
-  }
-  if (!relatedItem[prop] || !relatedItem[prop][0]) {
-    return 'Value for property not found';
-  }
-  return relatedItem[prop][0]['@value'];
-}
+
 
 function getDBLink(id) {
   return `https://omeka-s-t1.berlin-university-collections.de/admin/item/${id}`;
@@ -157,6 +165,7 @@ function selectItem(id) {
   if (item) {
     selectedItem.value = item; // Set the selected item
     currentInput.value = ''; // Clear the input
+
   }
 }
 function getIllustrations(id) {
@@ -172,6 +181,19 @@ function getIllustrations(id) {
     });
   return illustrations;
 }
+  function downloadJson(jsonContent) {
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'dossier.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+function formatHeaderData(headerData) {
+  return headerData.replace(/(?:\r\n|\r|\n)/g, '<br>');
+} 
 onMounted(async () => {
   try {
     const response = await fetch('https://omeka-s-t1.berlin-university-collections.de/api/items');
@@ -225,8 +247,12 @@ onMounted(async () => {
               <img src="@/assets/icons/edit.svg" alt="Edit" class="icon edit-icon"/>
             </a>
           </h3>
+          <button @click="downloadJson(selectedItem.dossierJson)">Download Werkdossier als JSON</button>
           <div class="content">
+            <h3>Werkdaten</h3>
+            <div class="header-data" v-html="formatHeaderData(selectedItem.headerData)" />            
             <template v-if="selectedItem?.related">
+              <h3>Informationen aus der Provenienzrecherche</h3>
               <div class="field"
                 v-for="(values, label) in selectedItem.related"
                 :key="label"
