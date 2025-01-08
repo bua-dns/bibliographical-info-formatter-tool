@@ -5,11 +5,11 @@ This tool produces formatted bibliographical information for publications that a
 The data is fetched using the Search and Retrieve via URL (SRU) interface of the catalogue.
 The frontend (see below) asks for a Pica Production Number (PPN).  
 The input is the Pica Production Number (PPN), a 9- or 10-digit identifier for all entries in K10plus.
-The output is a formatted 
+The output is a formatted reference.
 
 ## Frontend (GitHub Pages)
 
-[https://github.com/bua-dns/bibliographical-info-formatter-tool](https://github.com/bua-dns/bibliographical-info-formatter-tool/)
+[https://bua-dns.github.io/bibliographical-info-formatter-tool/](https://bua-dns.github.io/bibliographical-info-formatter-tool/)
 
 This template should help get you started developing with Vue 3 in Vite.
 
