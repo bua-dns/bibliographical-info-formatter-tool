@@ -1,8 +1,15 @@
-# inspector-vue-01
+# bibliographic-formatter-tool
+
+## What this tool does
+This tool produces formatted bibliographical information for publications that are listed in the K10plus catalogue.
+The data is fetched using the Search and Retrieve via URL (SRU) interface of the catalogue.
+The frontend (see below) asks for a Pica Production Number (PPN).  
+The input is the Pica Production Number (PPN), a 9- or 10-digit identifier for all entries in K10plus.
+The output is a formatted 
 
 ## Frontend (GitHub Pages)
 
-[https://bua-dns.github.io/vue-deployment/](https://bua-dns.github.io/vue-deployment/)
+[https://github.com/bua-dns/bibliographical-info-formatter-tool](https://github.com/bua-dns/bibliographical-info-formatter-tool/)
 
 This template should help get you started developing with Vue 3 in Vite.
 
