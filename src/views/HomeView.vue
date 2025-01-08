@@ -1,23 +1,45 @@
 <script setup>
+// Fetch data when the component is mounted
 import { ref, computed } from 'vue';
 import { fetchAndProcess } from '@/composables/useFetchAndProcessK10PlusData.js';
 
-const itemsData = ref([]);
-const rawData = ref(null);
-const items = ref([]);
+const citations = ref(null);
 const loading = ref(false);
 const error = ref(null);
 const currentInput = ref('');
+const selectedId = ref(null);
 
-async function submitSearch() {
-// call composable function for fetching data
-    console.log('submitSearch', currentInput.value);
+async function fetchData() {
+  // check for valid id input
+  const regex = /^\d{9,10}$/;
+  if (!regex.test(currentInput.value)) {
+    currentInput.value = '';
+    return;
+  }
+  selectedId.value = currentInput.value;
+  try {
+    const data = await fetchAndProcess({ id: currentInput.value }); 
+    citations.value = data; // Store resolved data
+  } catch (error) {
+    console.error('Failed to fetch data:', error);
+  }
+};
+function clearSearch() {
+  currentInput.value = '';
+  selectedId.value = null;
+  citations.value = null;
 }
 
-const citations = computed(async () => {
-  return await fetchAndProcess( { id: '094708924' })
-});
-
+function getK10PlusLink(ppn) {
+  return `https://opac.k10plus.de/DB=2.299/PPNSET?PPN=${ppn}`;
+}
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    console.log('Text copied to clipboard');
+  }).catch(err => {
+    console.error('Failed to copy text: ', err);
+  });
+}
 </script>
 
 <template>
@@ -31,23 +53,33 @@ const citations = computed(async () => {
         <input type="text" class="search" v-model="currentInput" 
           placeholder="ppn eintragen"
         />
-        <button @click="submitSearch()" v-if="currentInput.length">Abschicken</button>
+        <button @click="fetchData()" v-if="currentInput.length">Abschicken</button>
         <img src="@/assets/icons/x-circle.svg" alt="Edit" class="icon close-icon"
-          @click="currentInput = ''"
+          @click="clearSearch()"
           v-if="currentInput"
         />
       </div>
     </div>
-    <div class="display content-element">
-      <div v-if="loading">Loading...</div>
-      <div v-else-if="error">{{ error }}</div>
-      <div v-else>
-        Display Ergebnisse
+    <template  v-if="citations">
+      <div class="display content-element">
+        <div>
+
+          <h4>Literaturangabe für  
+            <a :href="getK10PlusLink(selectedId)" alt="Link zum Katalogeintrag" target="_blank">PPN {{ selectedId }}</a></h4>
+          <div>{{ citations?.plainText }}</div>
+          <button @click="copyToClipboard(citations.plainText)">In die Zwischenablage kopieren</button>
+        </div>
       </div>
-  </div>
-  <div class="data-output" v-if="true">
-    <h3>Raw Data</h3>
-    <pre>{{ citations }}</pre>
+      <div class="display content-element">
+        <div v-if="true">
+          <h4>Literaturangabe für PPN {{ selectedId }} in HTML-Format</h4>
+          <div>{{ citations?.html }}</div>
+          <button @click="copyToClipboard(citations.plainText)">In die Zwischenablage kopieren</button>
+        </div>
+      </div>
+    </template>
+  <div class="data-output" v-if="false">
+    <pre v-if="true">{{ citations }}</pre>
   </div>
 </main>
 </template>

@@ -156,7 +156,6 @@ export async function fetchAndProcess ({ id }) {
         const jsonData = parseXmlToJson(xmlData);
         const mappedData = transformJsonData(jsonData);
         const enhancedData = enhanceJsonData(mappedData);
-        console.log('Enhanced Data:', formatCitation(enhancedData, 'dns', 'de'));
         return formatCitation(enhancedData, 'dns', 'de');
 
     } catch (error) {
