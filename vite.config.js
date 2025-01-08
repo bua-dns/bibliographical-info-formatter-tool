@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
-  base: '/vue-deployment/',
+  base: '/bibliographical-info-formatter-tool/',
   build: {
     outDir: 'docs', // Change output directory to docs
   },
