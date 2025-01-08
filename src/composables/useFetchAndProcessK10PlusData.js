@@ -1,6 +1,3 @@
-import fs from 'fs/promises';
-import path from 'path';
-// import { parseStringPromise } from 'xml2js';
 import { XMLParser } from 'fast-xml-parser';
 import { formatCitation } from './useFormatCitation.js';
 
