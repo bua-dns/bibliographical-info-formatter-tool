@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { parseStringPromise } from 'xml2js';
+// import { parseStringPromise } from 'xml2js';
+import { XMLParser } from 'fast-xml-parser';
 import { formatCitation } from './useFormatCitation.js';
 
 
@@ -17,13 +18,14 @@ const fetchXmlData = async (id) => {
             throw new Error(`Failed to fetch XML: ${response.statusText} (Status: ${response.status})`);
         }
         return await response.text();
+
     } catch (error) {
         console.error(`Error fetching XML: ${error.message}`);
         throw error;
     }
 };
 
-// Parse XML to JSON
+/* Parse XML to JSON
 const parseXmlToJson = async (xmlData) => {
     try {
         return await parseStringPromise(xmlData, {
@@ -35,11 +37,29 @@ const parseXmlToJson = async (xmlData) => {
         throw error;
     }
 };
+*/
 
+const parseXmlToJson = (xmlData) => {
+    try {
+        const parser = new XMLParser({
+            ignoreAttributes: false,
+            attributeNamePrefix: '',
+            isArray: (name, jpath, isLeafNode) => false,
+        });
+        const jsonData = parser.parse(xmlData);
+        console.log('JSON Data:', jsonData);
+        return parser.parse(xmlData);
+    } catch (error) {
+        console.error('Error parsing XML to JSON:', error.message);
+        throw error;
+    }
+};
 // Reduce and Map JSON Data
+/*
 const transformJsonData = (jsonData) => {
     try {
         const reducedData = jsonData['zs:searchRetrieveResponse']['zs:records']['zs:record']['zs:recordData']['record']['datafield'];
+        console.log('Reduced Data:', reducedData.length);
         return reducedData.map((field) => {
             const tag = field['tag'];
             return { [tag]: field };
@@ -49,11 +69,26 @@ const transformJsonData = (jsonData) => {
         throw error;
     }
 };
-
+*/
+const transformJsonData = (jsonData) => {
+    try {
+        // Adjusted to the new JSON structure
+        const reducedData = jsonData['zs:searchRetrieveResponse']['zs:records']['zs:record']['zs:recordData']['record']['datafield'];
+        console.log('Reduced Data:', reducedData.length);
+        return reducedData.map((field) => {
+            const tag = field['tag'];
+            return { [tag]: field };
+        });
+    } catch (error) {
+        console.error('Error reducing JSON data:', error.message);
+        throw error;
+    }
+};
+/*
 // Enhance JSON Data with Subfield Mapping
 const enhanceJsonData = (mappedData) => {
     const enhancedData = {};
-
+    console.log('Mapped Data:', mappedData.length);
     mappedData.forEach((item) => {
         const key = Object.keys(item)[0];
         const entry = item[key];
@@ -81,13 +116,44 @@ const enhanceJsonData = (mappedData) => {
 
     return enhancedData;
 };
+*/
+const enhanceJsonData = (mappedData) => {
+    const enhancedData = {};
+    console.log('Mapped Data:', mappedData.length);
 
+    mappedData.forEach((item) => {
+        const key = Object.keys(item)[0];
+        const entry = item[key];
+
+        // Flatten subfield data
+        const flattenedEntry = {};
+        if (entry.subfield) {
+            if (Array.isArray(entry.subfield)) {
+                entry.subfield.forEach((sub) => {
+                    if (sub.code && sub["#text"]) {
+                        flattenedEntry[sub.code] = sub["#text"];
+                    }
+                });
+            } else if (entry.subfield.code && entry.subfield["#text"]) {
+                flattenedEntry[entry.subfield.code] = entry.subfield["#text"];
+            }
+        }
+
+        // Add or append the flattened entry to the result object
+        if (!enhancedData[key]) {
+            enhancedData[key] = [];
+        }
+        enhancedData[key].push(flattenedEntry);
+    });
+
+    return enhancedData;
+};
 // Main Function: Fetch and Process Data
 export async function fetchAndProcess ({ id }) {
     try {
         const xmlData = await fetchXmlData(id);
 
-        const jsonData = await parseXmlToJson(xmlData);
+        const jsonData = parseXmlToJson(xmlData);
         const mappedData = transformJsonData(jsonData);
         const enhancedData = enhanceJsonData(mappedData);
         console.log('Enhanced Data:', formatCitation(enhancedData, 'dns', 'de'));
