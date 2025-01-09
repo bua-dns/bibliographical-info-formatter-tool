@@ -1,9 +1,7 @@
 import { XMLParser } from 'fast-xml-parser';
 import { formatCitation } from './useFormatCitation.js';
 
-
 const BASE_URL = 'https://sru.k10plus.de/opac-de-627';
-
 
 // Fetch XML Data
 const fetchXmlData = async (id) => {
@@ -22,20 +20,6 @@ const fetchXmlData = async (id) => {
     }
 };
 
-/* Parse XML to JSON
-const parseXmlToJson = async (xmlData) => {
-    try {
-        return await parseStringPromise(xmlData, {
-            explicitArray: false,
-            mergeAttrs: true,
-        });
-    } catch (error) {
-        console.error('Error parsing XML to JSON:', error.message);
-        throw error;
-    }
-};
-*/
-
 const parseXmlToJson = (xmlData) => {
     try {
         const parser = new XMLParser({
@@ -51,22 +35,7 @@ const parseXmlToJson = (xmlData) => {
         throw error;
     }
 };
-// Reduce and Map JSON Data
-/*
-const transformJsonData = (jsonData) => {
-    try {
-        const reducedData = jsonData['zs:searchRetrieveResponse']['zs:records']['zs:record']['zs:recordData']['record']['datafield'];
-        console.log('Reduced Data:', reducedData.length);
-        return reducedData.map((field) => {
-            const tag = field['tag'];
-            return { [tag]: field };
-        });
-    } catch (error) {
-        console.error('Error reducing JSON data:', error.message);
-        throw error;
-    }
-};
-*/
+
 const transformJsonData = (jsonData) => {
     try {
         // Adjusted to the new JSON structure
@@ -81,39 +50,7 @@ const transformJsonData = (jsonData) => {
         throw error;
     }
 };
-/*
-// Enhance JSON Data with Subfield Mapping
-const enhanceJsonData = (mappedData) => {
-    const enhancedData = {};
-    console.log('Mapped Data:', mappedData.length);
-    mappedData.forEach((item) => {
-        const key = Object.keys(item)[0];
-        const entry = item[key];
 
-        // Flatten subfield data
-        const flattenedEntry = {};
-        if (entry.subfield) {
-            if (Array.isArray(entry.subfield)) {
-                entry.subfield.forEach((sub) => {
-                    if (sub.code && sub._) {
-                        flattenedEntry[sub.code] = sub._;
-                    }
-                });
-            } else if (entry.subfield.code && entry.subfield._) {
-                flattenedEntry[entry.subfield.code] = entry.subfield._;
-            }
-        }
-
-        // Add or append the flattened entry to the result object
-        if (!enhancedData[key]) {
-            enhancedData[key] = [];
-        }
-        enhancedData[key].push(flattenedEntry);
-    });
-
-    return enhancedData;
-};
-*/
 const enhanceJsonData = (mappedData) => {
     const enhancedData = {};
     console.log('Mapped Data:', mappedData.length);
