@@ -100,7 +100,7 @@ export function formatCitation(data, template, lang) {
     citation = generalCleanup(citation);
     return {
         plainText: citation.replace(/\<em\>/g, '').replace(/\<\/em\>/g, ''),
-        html: citation
+        html: `<p>${citation}</p>`
     };
 }
 
