@@ -62,7 +62,7 @@ function copyToClipboard(text) {
       </div>
     </div>
     <template v-if="showInfo">
-      <div class="content-element">
+      <div class="content-element info">
 
         <p>
           Dieses Tool ermöglicht die Formatierung bibliografischer Informationen aus dem <a href="https://opac.k10plus.de/" alt="zum K10Plus-Katalog" target="_blank">K10plus-Katalog</a>.
@@ -78,14 +78,15 @@ function copyToClipboard(text) {
 
           <h4>Literaturangabe für  
             <a :href="getK10PlusLink(selectedId)" alt="Link zum Katalogeintrag" target="_blank">PPN {{ selectedId }}</a></h4>
-          <div>{{ citations?.plainText }}</div>
+          <div class="output">{{ citations?.plainText }}</div>
           <button @click="copyToClipboard(citations.plainText)">In die Zwischenablage kopieren</button>
         </div>
       </div>
       <div class="display content-element">
         <div v-if="true">
-          <h4>Literaturangabe für PPN {{ selectedId }} in HTML-Format</h4>
-          <div>{{ citations?.html }}</div>
+          <h4>Literaturangabe für  
+            <a :href="getK10PlusLink(selectedId)" alt="Link zum Katalogeintrag" target="_blank">PPN {{ selectedId }}</a>im HTML-Format</h4>
+          <div class="output">{{ citations?.html }}</div>
           <button @click="copyToClipboard(citations.plainText)">In die Zwischenablage kopieren</button>
         </div>
       </div>
@@ -179,60 +180,26 @@ h4 {
   margin-bottom: 0.5rem;
   font-size: 1.125rem;
 }
-.item {
-  margin-bottom: 1rem;
+.controls button {
+  margin-left: 0.5rem;
 }
-.provenance-property {
-  margin-left: 1rem;
-  margin-bottom: 0.25rem;
+.display h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
 }
-.value-listing {
-  margin-left: 1rem;
-}
-.value {
-  display: flex;
-  align-items: center;
-  margin-left: 1rem;
-}
-.thumb {
-  margin-bottom: 1rem;
-}
-
-.table-container {
-  overflow-x: auto;
-  padding: 16px;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ddd;
-}
-
-.data-table th,
-.data-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-.data-table thead tr {
+.display .output {
+  padding: 1rem;
   background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
 }
-
-.data-table tbody tr:nth-child(even) {
-  background-color: #f3f3f3;
-}
-
-.data-table .image-cell {
-  text-align: center;
-}
-
-.data-table .image-cell img {
-  max-width: 600px;
-  max-height: 400px;
-  height: auto;
-  display: block;
-  margin: auto;
+.display button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #0078d4;
+  color: #fff;
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 </style>
