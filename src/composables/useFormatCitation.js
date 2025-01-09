@@ -16,8 +16,6 @@ function close(type, lang) {
         }
     };
     
-
-        
     return types[type][lang].marker + types[type][lang].separator;
 }
 

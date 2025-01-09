@@ -86,7 +86,6 @@ const enhanceJsonData = (mappedData) => {
 export async function fetchAndProcess ({ id }) {
     try {
         const xmlData = await fetchXmlData(id);
-
         const jsonData = parseXmlToJson(xmlData);
         const mappedData = transformJsonData(jsonData);
         const enhancedData = enhanceJsonData(mappedData);

@@ -1,5 +1,4 @@
 <script setup>
-// Fetch data when the component is mounted
 import { ref, computed } from 'vue';
 import { fetchAndProcess } from '@/composables/useFetchAndProcessK10PlusData.js';
 
@@ -11,7 +10,6 @@ const selectedId = ref(null);
 const showInfo = computed (() => !selectedId.value);
 
 async function fetchData() {
-  // check for valid id input
   const regex = /^\d{8,11}$/;
   if (!regex.test(currentInput.value)) {
     currentInput.value = '';
@@ -20,11 +18,12 @@ async function fetchData() {
   selectedId.value = currentInput.value;
   try {
     const data = await fetchAndProcess({ id: currentInput.value }); 
-    citations.value = data; // Store resolved data
+    citations.value = data;
   } catch (error) {
     console.error('Failed to fetch data:', error);
   }
 };
+
 function clearSearch() {
   currentInput.value = '';
   selectedId.value = null;
@@ -63,7 +62,6 @@ function copyToClipboard(text) {
     </div>
     <template v-if="showInfo">
       <div class="content-element info">
-
         <p>
           Dieses Tool ermöglicht die Formatierung bibliografischer Informationen aus dem <a href="https://opac.k10plus.de/" alt="zum K10Plus-Katalog" target="_blank">K10plus-Katalog</a>.
           Geben Sie eine Hier die Pica-Produktions-Nummer (PPN) ein und klicken Sie auf "Abschicken", um die bibliografischen Informationen
@@ -75,7 +73,6 @@ function copyToClipboard(text) {
     <template  v-if="citations">
       <div class="display content-element">
         <div>
-
           <h4>Literaturangabe für  
             <a :href="getK10PlusLink(selectedId)" alt="Link zum Katalogeintrag" target="_blank">PPN {{ selectedId }}</a></h4>
           <div class="output">{{ citations?.plainText }}</div>
@@ -139,7 +136,6 @@ a {
   padding: 0.5rem;
   font-size: 1rem;
 } 
-
 .content-element {
   padding: 1rem;
   margin-bottom: 0.75rem;
