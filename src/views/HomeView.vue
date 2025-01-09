@@ -11,7 +11,7 @@ const selectedId = ref(null);
 
 async function fetchData() {
   // check for valid id input
-  const regex = /^\d{9,10}$/;
+  const regex = /^\d{8,11}$/;
   if (!regex.test(currentInput.value)) {
     currentInput.value = '';
     return;
