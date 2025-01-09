@@ -1,40 +1,50 @@
-# bibliographic-formatter-tool
+# Formatter Tool for K10plus Data (Work in Progress)
 
 ## What this tool does
-This tool produces formatted bibliographical information for publications that are listed in the K10plus catalogue.
-The data is fetched using the Search and Retrieve via URL (SRU) interface of the catalogue.
-The frontend (see below) asks for a Pica Production Number (PPN).  
-The input is the Pica Production Number (PPN), a 9- or 10-digit identifier for all entries in K10plus.
-The output is a formatted reference.
+
+This tool produces formatted bibliographical information for publications that are listed in the [K10plus](https://opac.k10plus.de/) catalogue. The data is fetched using the Search and Retrieve via URL (SRU) interface of K10plus.
+
+The frontend (see below) asks for a Pica Production Number (PPN), a 9- or 10-digit identifier that is available for all entries in K10plus.
+
+The output is a formatted reference in plain text and html format that can be copied into the user's clipboard.
+
+## Configuration
+
+(Coming soon ...)
 
 ## Frontend (GitHub Pages)
 
+The tool's frontend is programmed in vue.js and is by default hosted on github pages:
+
 [https://bua-dns.github.io/bibliographical-info-formatter-tool/](https://bua-dns.github.io/bibliographical-info-formatter-tool/)
 
-This template should help get you started developing with Vue 3 in Vite.
+## Working With Vue.js
 
-## Recommended IDE Setup
+### Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Customize configuration
+### Customize configuration
 
 See [Vite Configuration Reference](https://vite.dev/config/).
 
-## Project Setup
+### Project Setup
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+#### Compile and Hot-Reload for Development
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+#### Compile and Minify for Production
 
 ```sh
 npm run build
 ```
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
